@@ -1,7 +1,7 @@
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ChatAction
 from telegram.ext import *
 import bot_token
-import RMI_imgs_v4 as imgs
+import RMI_imgs as imgs
 import logging
 
 
