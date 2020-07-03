@@ -121,6 +121,7 @@ def cancel(update, context):
 
 def no_entry(update, context):
     update.message.reply_text('אתה לא מורשה!')
+    return ConversationHandler.END
 
 
 def main():

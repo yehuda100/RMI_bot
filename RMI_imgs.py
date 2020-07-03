@@ -206,7 +206,7 @@ def main():
     text = 'סרחיו שייך לכאן.\n הוא איתנו כבר מלא ש\nנים והוא צריך לפרוש כאן. זה מה שאני חושב ואני אעמוד על כך.'
     quoted = 'פלורנטינו פרס'
     quoted2 = 'אני'
-    quoted3 = 'כריסטןףליאנו'
+    quoted3 = 'כריסטןליאנו'
 
     produce_final(image, color, text, quoted).show()
 
