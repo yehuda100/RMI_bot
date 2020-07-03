@@ -33,12 +33,12 @@ def get_photo(update, context):
     elif imgs.get_size('{}.jpg'.format(file_name)) < 960:
         update.message.reply_text(
         'יש לך תמונה באיכות יותר טובה בשבילי?',
-        reply_markup=ReplyKeyboardMarkup([['לא', 'כן']], one_time_keyboard=True, resize_keyboard=True))
+        reply_markup=ReplyKeyboardMarkup([['לא', 'כן']], resize_keyboard=True))
         return REPLACE_PHOTO
 
     update.message.reply_text(
     'מעולה, איזה צבע תרצה?',
-    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True))
+    reply_markup=ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True))
 
     return GET_COLOR
 
@@ -55,7 +55,7 @@ def replace_photo(update, context):
     else:
         update.message.reply_text(
         'סעמק, איזה צבע אתה רוצה?',
-        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True))
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True))
         return GET_COLOR
 
 
@@ -71,7 +71,7 @@ def skip_photo(update, context):
 
     update.message.reply_text(
     'אוקיי, איזה צבע תרצה?',
-    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, resize_keyboard=True))
+    reply_markup=ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True))
 
     return GET_COLOR
 

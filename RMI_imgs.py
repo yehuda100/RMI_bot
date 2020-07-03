@@ -76,10 +76,10 @@ def paint(image, color, white_image=False):
     return image
 
 
-def fix_size(image_size_x, image, image_name):
+def fix_size(scale, image, image_name):
 
-    ratio = {'dot': image_size_x//16, 'design': image_size_x//4, 'banner': image_size_x//2,\
-    'marks': image_size_x//4, 'water': image_size_x//10*3}
+    ratio = {'dot': scale // 16, 'design': scale // 4, 'banner': scale // 2,\
+    'marks': scale // 4, 'water': scale // 10 * 3}
     image.thumbnail((ratio[image_name], ratio[image_name]))
     return image
 
@@ -91,12 +91,14 @@ def banner_text(banner, quoted):
     font_size = 72
     font = ImageFont.truetype('Agas.ttf', font_size)
     quoted_size = draw.textsize(quoted, font=font)
-    while quoted_size[0] > banner_size[0] - (banner_size[0] // 4) or quoted_size[1] > round(banner_size[0] / 1.2):
+    while quoted_size[0] > banner_size[0] - banner_size[0] // 5 or quoted_size[1] > round(banner_size[1] / 1.4):
         font_size -= 4
         font = ImageFont.truetype('Agas.ttf', font_size)
         quoted_size = draw.textsize(quoted, font=font)
-    draw.text((banner_size[0] // 5, ((banner_size[1] - quoted_size[1] ) // 2) - quoted_size[1] // 3), quoted, fill='white', font=font)
-    banner = banner.crop((0, 0, quoted_size[0] + banner_size[0] // 4, banner_size[1]))
+    banner = banner.crop((0, 0, quoted_size[0] + banner_size[0] // 6, banner_size[1]))
+    draw = ImageDraw.Draw(banner)
+    banner_size = banner.size
+    draw.text(((banner_size[0] - quoted_size[0]) // 2 + banner_size[0] // 20, (banner_size[1] - quoted_size[1]) // 2 - banner_size[1] // 7), quoted, fill='white', font=font)
     return banner
 
 
@@ -124,18 +126,21 @@ def produce_final(image, color, text, quoted):
 
     design.paste(logo, (1, 60), logo)
 
-    banner = banner_text(banner, quoted)
+    if image_size_x > image_size_y:
+        scale = image_size_y
+    else:
+        scale = image_size_x
 
-    colorize_dot = fix_size(image_size_x, colorize_dot, 'dot')
-    non_colorize_dot = fix_size(image_size_x, non_colorize_dot, 'dot')
-    design = fix_size(image_size_x, design, 'design')
+    colorize_dot = fix_size(scale, colorize_dot, 'dot')
+    non_colorize_dot = fix_size(scale, non_colorize_dot, 'dot')
+    design = fix_size(scale, design, 'design')
     banner = fix_size(image_size_x, banner, 'banner')
     marks = fix_size(image_size_x, marks, 'marks')
     water = fix_size(image_size_x, water, 'water')
 
     counter = 0
     dot_size_x = colorize_dot.size[0]
-    while counter < 16:
+    while counter * dot_size_x < image_size_x - dot_size_x:
         if counter == 0:
             final.paste(colorize_dot, (dot_size_x * counter, 0), colorize_dot)
             counter = 1
@@ -149,6 +154,7 @@ def produce_final(image, color, text, quoted):
                 final.paste(colorize_dot, (dot_size_x * counter, 0), colorize_dot)
             counter += 1
 
+    banner = banner_text(banner, quoted)
     banner_size = banner.size
     final.paste(banner, (image_size_x - banner_size[0], image_size_y - banner_size[1]//2), banner)
 
@@ -192,7 +198,6 @@ def get_size(image):
 
 def main():
 
-    #path = 'C:/Users/ybsh1/OneDrive/python/files/photo.jpg'
     image = Image.open('C:/Users/ybsh1/OneDrive/python/files/photo.jpg')
     image.thumbnail((1280, 1280))
 
@@ -200,7 +205,8 @@ def main():
 
     text = 'סרחיו שייך לכאן.\n הוא איתנו כבר מלא ש\nנים והוא צריך לפרוש כאן. זה מה שאני חושב ואני אעמוד על כך.'
     quoted = 'פלורנטינו פרס'
-
+    quoted2 = 'אני'
+    quoted3 = 'כריסטןףליאנו'
 
     produce_final(image, color, text, quoted).show()
 
