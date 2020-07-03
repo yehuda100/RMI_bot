@@ -10,14 +10,13 @@ def add_text(text, image_size_x):
     font = ImageFont.truetype('Ahlab.ttf', font_size)
     new_line_list = []
     for line in text:
-        if draw.textsize(line, font=font)[0] > image_size_x - image_size_x // 5:
+        if draw.textsize(line, font=font)[0] > image_size_x - image_size_x // 6:
             lines = line.split()
             while len(lines) > 0:
                 new_line = lines.pop(0)
-                while draw.textsize(new_line, font=font)[0] < image_size_x - image_size_x // 5:
-                    if len(lines) > 0:
-                        new_line += ' ' + lines.pop(0)
-                    else:
+                while len(lines) > 0 and draw.textsize(new_line + ' ' + lines[0], font=font)[0] < image_size_x - image_size_x // 6:
+                    new_line += ' ' + lines.pop(0)
+                    if len(lines) == 0:
                         break
                 new_line_list.append(new_line[::-1])
         else:
@@ -203,7 +202,7 @@ def main():
 
     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
-    text = 'סרחיו שייך לכאן.\n הוא איתנו כבר מלא ש\nנים והוא צריך לפרוש כאן. זה מה שאני חושב ואני אעמוד על כך.'
+    text = 'בגטהם רכנכנ כרםט בכרםוט בכרםק ברםטר רםכ םכ\nטכככ ם  סרחיו שייך לכאן. הוא איתנו כבר מלא שנים והוא צריך לפרוש כאן. זה מה שאני חושב ואני אעמוד עלך.'
     quoted = 'פלורנטינו פרס'
     quoted2 = 'אני'
     quoted3 = 'כריסטןליאנו'
