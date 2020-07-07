@@ -124,6 +124,7 @@ def banner_text(banner, quoted):
     banner = banner.crop((0, 0, quoted_size[0] + banner_size[0] // 6, banner_size[1]))
     draw = ImageDraw.Draw(banner)
     banner_size = banner.size
+    quoted_size = draw.textsize(quoted, font=font)
     draw.text(((banner_size[0] - quoted_size[0]) // 2 + banner_size[0] // 20, (banner_size[1] - banner_size[1] // 3 - quoted_size[1]) // 2), quoted, fill='white', font=font)
     return banner
 
@@ -235,7 +236,7 @@ def main():
     quoted3 = 'ולךןט'
     quoted4 = 'ולחעח כרן רי כריך'
 
-    produce_final(image, color, text, quoted3).show()
+    produce_final(image, color, text, quoted).show()
 
 if __name__ == '__main__':
     main()
