@@ -2,30 +2,58 @@ from PIL import Image, ImageDraw, ImageFont
 import random
 
 
-def add_text(text, image_size_x):
-    text = text.splitlines()
-    image = Image.new('RGB', (image_size_x, image_size_x), (255, 255, 255))
-    draw = ImageDraw.Draw(image)
-    font_size = (image_size_x - image_size_x // 5) // 13
-    font = ImageFont.truetype('Ahlab.ttf', font_size)
-    new_line_list = []
-    for line in text:
-        if draw.textsize(line, font=font)[0] > image_size_x - image_size_x // 6:
-            lines = line.split()
-            while len(lines) > 0:
-                new_line = lines.pop(0)
-                while len(lines) > 0 and draw.textsize(new_line + ' ' + lines[0], font=font)[0] < image_size_x - image_size_x // 6:
-                    new_line += ' ' + lines.pop(0)
-                    if len(lines) == 0:
-                        break
-                new_line_list.append(new_line[::-1])
-        else:
-            new_line_list.append(line[::-1])
+def hebrew_only(text):
+    hebrew = 'אבגדהוזהחטיכלמנסעפצקרשתםןץףך:"?!-,./\''
+    check = ((i not in hebrew) for i in text)
+    return not any(check)
 
-    text = '\n'.join(new_line_list)
+
+def fix_rtl(text):
+    text = text.split()
+    fixed_text = []
+    for word in text:
+        if hebrew_only(word):
+            fixed_text.append(word)
+        else:
+            word = list(word)
+            index = 0
+            while hebrew_only(word[index]):
+                index += 1
+            word = ''.join(word)
+            hebrew_half = word[:index]
+            other_half = word[index:]
+            word = hebrew_half + other_half[::-1]
+            fixed_text.append(word)
+    return ' '.join(fixed_text)
+
+
+def add_text(text, image_size_x):
+    font_size = (image_size_x - image_size_x // 6) // 13
+    font = ImageFont.truetype('Ahlab.ttf', font_size)
+
+    text = text.splitlines()
+    new_lines_list = []
+    for line in text:
+        if not hebrew_only(line):
+            line = fix_rtl(line)
+        if font.font.getsize(line)[0][0] < image_size_x - image_size_x // 6:
+            new_lines_list.append(line[::-1])
+        else:
+            words_list = line.split()
+            while len(words_list) > 0:
+                new_words_list = []
+                while font.font.getsize(' '.join(words_list))[0][0] > image_size_x - image_size_x // 6:
+                        new_words_list = [words_list.pop(-1)] + new_words_list
+                new_lines_list.append(' '.join(words_list)[::-1])
+                words_list = new_words_list
+
+    y_size = font.font.getsize(new_lines_list[0])[0][1] * len(new_lines_list) + image_size_x // 5
+    text = '\n'.join(new_lines_list)
+    image = Image.new('RGB', (image_size_x, y_size), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
     text_size = draw.multiline_textsize(text, font=font)
-    draw.multiline_text(((image_size_x - text_size[0]) // 2, image_size_x // 10), text, fill='black', font=font, align='right')
-    return image, text_size
+    draw.multiline_text(((image_size_x - text_size[0]) // 2, (y_size - text_size[1]) // 2), text, fill='black', font=font, align='right')
+    return image
 
 
 def load():
@@ -104,9 +132,9 @@ def banner_text(banner, quoted):
 def produce_final(image, color, text, quoted):
 
     image_size_x, image_size_y = image.size
-    text_image, text_size = add_text(text, image_size_x)
+    text_image = add_text(text, image_size_x)
 
-    final = Image.new('RGB', (image_size_x, image_size_y + text_size[1] + image_size_x // 5), (255, 255, 255))
+    final = Image.new('RGB', (image_size_x, image_size_y + text_image.size[1]), (255, 255, 255))
     final.paste(image)
     final.paste(text_image, (0, image_size_y))
 
@@ -197,12 +225,12 @@ def get_size(image):
 
 def main():
 
-    image = Image.open('C:/Users/ybsh1/OneDrive/python/files/photo.jpg')
+    image = Image.open('C:/Users/ybsh1/OneDrive/python/files/a.jpg')
     image.thumbnail((1280, 1280))
 
     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
-    text = 'בגטהם רכנכנ כרםט בכרםוט בכרםק ברםטר רםכ םכ\nטכככ ם  סרחיו שייך לכאן. הוא איתנו כבר מלא שנים והוא צריך לפרוש כאן. זה מה שאני חושב ואני אעמוד עלך.'
+    text = 'ם רכרםט בכרםוט בכרםק ברםטר רםכ םכ\nטכככ ם  סרחיו שייך לכאן. הוא איתנו כבר מלא שנים והוא צריך לפרוש כאן. זה מה שאני מוד עלך.'
     quoted = 'פלורנטינו פרס'
     quoted2 = 'אני'
     quoted3 = 'כריסטןליאנו'
