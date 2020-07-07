@@ -113,19 +113,18 @@ def fix_size(scale, image, image_name):
 
 def banner_text(banner, quoted):
     banner_size = banner.size
-    draw = ImageDraw.Draw(banner)
     quoted = '{:^10}'.format(quoted[::-1])
     font_size = 72
     font = ImageFont.truetype('Agas.ttf', font_size)
-    quoted_size = draw.textsize(quoted, font=font)
+    quoted_size = font.font.getsize(quoted)[0]
     while quoted_size[0] > banner_size[0] - banner_size[0] // 5 or quoted_size[1] > round(banner_size[1] / 1.4):
         font_size -= 4
         font = ImageFont.truetype('Agas.ttf', font_size)
-        quoted_size = draw.textsize(quoted, font=font)
+        quoted_size = font.font.getsize(quoted)[0]
     banner = banner.crop((0, 0, quoted_size[0] + banner_size[0] // 6, banner_size[1]))
     draw = ImageDraw.Draw(banner)
     banner_size = banner.size
-    draw.text(((banner_size[0] - quoted_size[0]) // 2 + banner_size[0] // 20, (banner_size[1] - quoted_size[1]) // 2 - banner_size[1] // 7), quoted, fill='white', font=font)
+    draw.text(((banner_size[0] - quoted_size[0]) // 2 + banner_size[0] // 20, (banner_size[1] - banner_size[1] // 3 - quoted_size[1]) // 2), quoted, fill='white', font=font)
     return banner
 
 
@@ -233,9 +232,10 @@ def main():
     text = 'ם רכרםט בכרםוט בכרםק ברםטר רםכ םכ\nטכככ ם  סרחיו שייך לכאן. הוא איתנו כבר מלא שנים והוא צריך לפרוש כאן. זה מה שאני מוד עלך.'
     quoted = 'פלורנטינו פרס'
     quoted2 = 'אני'
-    quoted3 = 'כריסטןליאנו'
+    quoted3 = 'ולךןט'
+    quoted4 = 'ולחעח כרן רי כריך'
 
-    produce_final(image, color, text, quoted).show()
+    produce_final(image, color, text, quoted3).show()
 
 if __name__ == '__main__':
     main()
