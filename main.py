@@ -1,5 +1,5 @@
 from flask import Flask, request
-from telegram import Bot, Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, ChatAction
+from telegram import Bot, Update, ParseMode, ReplyKeyboardMarkup, ReplyKeyboardRemove, ChatAction
 from telegram.ext import *
 import bot_token
 import RMI_imgs as imgs
@@ -126,8 +126,8 @@ def cancel(update, context):
 
 def no_entry(update, context):
     update.message.reply_text('אתה לא מורשה!')
-    return ConversationHandler.END
-
+    url = '<a href="tg://user?id={}"> - {} - </a>'.format(update.effective_user.id, update.effective_user.first_name)
+    context.bot.send_message(chat_id=258871997, text='המשתמש {} ניסה להשתמש בבוט.'.format(url), parse_mode=ParseMode.HTML)
 
 
 app = Flask(__name__)
@@ -142,8 +142,10 @@ def main():
     bot = Bot(bot_token.TOKEN)
     dp = Dispatcher(bot, None, workers=0, use_context=True)
 
+    dp.add_handler(MessageHandler(~Filters.chat([258871997, 26697264]), no_entry))
+
     conv_handler = ConversationHandler(
-    entry_points=[MessageHandler(~Filters.chat([258871997, 26697264, 313461563]), no_entry), CommandHandler('start', start)],
+    entry_points=[CommandHandler('start', start)],
     states={
     GET_PHOTO: [MessageHandler(Filters.photo, get_photo), CommandHandler('skip', skip_photo)],
     REPLACE_PHOTO: [MessageHandler(Filters.regex('^(כן|לא)$'), replace_photo)],
