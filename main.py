@@ -128,6 +128,7 @@ def no_entry(update, context):
     update.message.reply_text('אתה לא מורשה!')
     url = '<a href="tg://user?id={}"> - {} - </a>'.format(update.effective_user.id, update.effective_user.first_name)
     context.bot.send_message(chat_id=258871997, text='המשתמש {} ניסה להשתמש בבוט.'.format(url), parse_mode=ParseMode.HTML)
+    return ConversationHandler.END
 
 
 app = Flask(__name__)
